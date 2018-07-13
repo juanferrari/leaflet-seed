@@ -1,0 +1,109 @@
+Empezando de con React:
+
+-npm init: crea un package.jason (poner todo en default)
+
+-npm install react react-dom
+
+-npm install --save-dev webpack webpack-dev-server webpack-cli
+
+-npm install --save-dev babel-core babel-loader babel-preset-react babel-preset-env html-webpack-plugin
+
+Setear la configuración de webpack:
+
+crar un archivo webpack.config.js y poner lo siguiente adentro:
+
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+	entry: './src/index.js',
+	output: {
+		path: path.join(__dirname,'/dist'),
+		filename: 'index_bundle.js'
+	},
+	module: {
+		rules: [
+			{
+				test:/\.js$/,
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader'
+				}
+			}
+		]
+	},
+	plugins: [
+		//new HtmlWebpackPlugin() crea el archivo html principal
+		//Se puede especificar un template tambien ej:
+		new HtmlWebpackPlugin({
+			template:'src/index.html'
+		})
+	]
+}
+
+
+
+- crear un archivo .babelrc en root y poner lo siguiente adentro:
+
+{
+	"presets":["env","react"]
+}
+//Es para que se tomen los presets de babel.
+
+-crear una carpeta src y crear un archivo index.js con el siguiente contenido:
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+
+ReactDOM.render(<App />, document.getElementById("app"));
+
+- como pasamos el template como parámetro crear un archivo index.html en src con el siguiente contenido:
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+  	<div id="app"></div>
+  </body>
+</html>
+
+(el pluguin automáticamente pega dentro del body esta línea una vez que se compila..
+<script type="text/javascript" src="index_bundle.js"></script>
+que es lo que contiene el archivo de output definido webpack.
+)
+
+crear una carpeta components dentro de src y ahi adentro hacer un archivo App.js con el sig contenido:
+
+import React, { Component } from 'react';
+
+class App extends Component {
+	render(){
+		return(
+			<div>
+				<h1>My React App</h1>
+			</div>
+			);
+	}
+}
+
+export default App;
+
+- en el package.json en la parte de scripts tiene que quedar esto en vez de test
+
+"scripts": {
+    "start": "webpack-dev-server --mode development --open --hot",
+    "build": "webpack --mode production"
+  },
+
+-correr "npm start" en la terminal.
+y para produccion npm run build
+
+notas:-----------
+babel-core: sirve para para traducir ES6 a codigo amigable para el navegador.
+babel-loader: sirve para JSX
+Los presets son para compiplar cosas de ES6 y más.
+html-webpack-plugin: construye el build htmlfile (es a donde va la app embebida).
