@@ -21,7 +21,14 @@ module.exports = {
 			    test: /\.css$/,
 			    //loader: 'style-loader!css-loader?modules=true&localIdentName=[name]__[local]___[hash:base64:5]'
 			    use: [ 'style-loader', 'css-loader' ]
-			}
+			},
+			{
+		        test: /\.json$/,
+		        //include: [paths.appSrc, paths.appNodeModules],
+		        use: {
+		        	loader: 'json-loader'
+		        }
+	      	},
 		]
 	},	
 	resolve: {
