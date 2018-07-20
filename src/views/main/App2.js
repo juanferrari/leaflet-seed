@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet'
-import geojson from 'json-loader!./lanus.geojson';
+import geojson from 'json-loader!./test.geojson';
 
 export default class SimpleExample extends Component {
 
   constructor(props){
     super(props);
     this.state = {
-      lat: 37.81893781173967,
-      lng: -122.47867584228514,
+      lat: -58.41333710804967,
+      lng: -34.66598164912617,
       zoom: 13,
       open: false
     }
@@ -30,7 +30,7 @@ export default class SimpleExample extends Component {
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url='http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
         />
-        <GeoJSON data={getGeoJson()} style={this.getStyle} />
+        <GeoJSON data={geojson} style={this.getStyle} />
       </Map>
     )
   }
