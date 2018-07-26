@@ -8,12 +8,14 @@ export default class SimpleExample extends Component {
   constructor(props){
     super(props);
     this.state = {
-      lat: -34.62940399,
-      lng: -60.47531384,
-      zoom: 13,
+      lat: -34.64235943,
+      lng: -60.46995009,
+      zoom: 16,
       open: false,
-      geojson:null
+      geojson:null,
+      parcela:null
     }
+    this.onEachFeature = this.onEachFeature.bind(this);
   }
 
   getStyle(feature, layer) {
@@ -25,18 +27,21 @@ export default class SimpleExample extends Component {
   }
 
   onEachFeature(feature, layer) {
-      console.log('feature')
-      if (feature.properties && feature.properties.name) {
-          layer.bindPopup(feature.properties.name);
+    var context = this;
+    layer.on({
+      click: function(event) {
+        console.log(feature);
+        console.log(context)
+        context.setState({parcela:feature})
       }
+    });
   }
 
   componentWillMount(){
-    //var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&maxFeatures=2&outputFormat=application%2Fjson';
-    var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&outputFormat=application%2Fjson';
+    var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&maxFeatures=100&outputFormat=application%2Fjson';
+    //var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&outputFormat=application%2Fjson';
     axios.get(service_url)
     .then(data=>{
-      console.log('test',data.request.response)
       this.setState({geojson:JSON.parse(data.request.response)})
     }).catch(error=>{
       console.log(error.stack)
@@ -52,239 +57,32 @@ export default class SimpleExample extends Component {
 
     //return(<div>{this.state.geojson}</div>)
     return (
-      <Map center={position} zoom={this.state.zoom}>
-        <TileLayer
-          url='http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
-        />
-        <GeoJSON data={this.state.geojson} style={this.getStyle} onEachFeature={this.onEachFeature} />
-      </Map>
+      <div>
+        <div>
+          <Map center={position} zoom={this.state.zoom}>
+            <TileLayer
+              url='http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+            />
+            <GeoJSON data={this.state.geojson} style={this.getStyle} onEachFeature={this.onEachFeature} />
+          </Map>
+        </div>
+        <div className='text-center 'style={{display:(this.state.parcela)?'inherit':'none'}}>
+          <h1>Info de la parcela: </h1>
+          <br/>
+          <label>Layer: </label>
+          {(this.state.parcela)?(this.state.parcela.properties.layer) : (null)}
+          <br/>
+          <label>Id de la parcela: </label>
+          {(this.state.parcela)?(this.state.parcela.properties.id) : (null)}
+          <br/>
+          <label>Etiqueta: </label>
+          {(this.state.parcela)?(this.state.parcela.properties.etiqueta) : (null)}
+          <br/>
+          <label>Nomenclatura: </label>
+          {(this.state.parcela)?(this.state.parcela.properties.nomencla) : (null)}
+          <br/>
+        </div>
+      </div>
     )
   }
-}
-
-function getGeoJson() {
-return {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -122.47979164123535,
-            37.830124319877235
-          ],
-          [
-            -122.47721672058105,
-            37.809377088502615
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.46923446655273,
-          37.80293476836673
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.48399734497069,
-          37.83466623607849
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.47867584228514,
-          37.81893781173967
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.48069286346434,
-              37.800637436707525
-            ],
-            [
-              -122.48069286346434,
-              37.803104310307276
-            ],
-            [
-              -122.47950196266174,
-              37.803104310307276
-            ],
-            [
-              -122.47950196266174,
-              37.800637436707525
-            ],
-            [
-              -122.48069286346434,
-              37.800637436707525
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.48103886842728,
-              37.833075326166274
-            ],
-            [
-              -122.48065531253813,
-              37.832558431940114
-            ],
-            [
-              -122.4799284338951,
-              37.8322660885204
-            ],
-            [
-              -122.47963070869446,
-              37.83231693093747
-            ],
-            [
-              -122.47948586940764,
-              37.832467339549524
-            ],
-            [
-              -122.47945636510849,
-              37.83273426112019
-            ],
-            [
-              -122.47959315776825,
-              37.83289737938241
-            ],
-            [
-              -122.48004108667372,
-              37.833109220743104
-            ],
-            [
-              -122.48058557510376,
-              37.83328293020496
-            ],
-            [
-              -122.48080283403395,
-              37.83332529830436
-            ],
-            [
-              -122.48091548681259,
-              37.83322785163939
-            ],
-            [
-              -122.48103886842728,
-              37.833075326166274
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.48043537139893,
-              37.82564992009924
-            ],
-            [
-              -122.48129367828368,
-              37.82629397920697
-            ],
-            [
-              -122.48240947723389,
-              37.82544653184479
-            ],
-            [
-              -122.48373985290527,
-              37.82632787689904
-            ],
-            [
-              -122.48425483703613,
-              37.82680244295304
-            ],
-            [
-              -122.48605728149415,
-              37.82639567223645
-            ],
-            [
-              -122.4898338317871,
-              37.82663295542695
-            ],
-            [
-              -122.4930953979492,
-              37.82415839321614
-            ],
-            [
-              -122.49700069427489,
-              37.821887146654376
-            ],
-            [
-              -122.4991464614868,
-              37.82171764783966
-            ],
-            [
-              -122.49850273132326,
-              37.81798857543524
-            ],
-            [
-              -122.50923156738281,
-              37.82090404811055
-            ],
-            [
-              -122.51232147216798,
-              37.823344820392535
-            ],
-            [
-              -122.50150680541992,
-              37.8271414168374
-            ],
-            [
-              -122.48743057250977,
-              37.83093781796035
-            ],
-            [
-              -122.48313903808594,
-              37.82822612280363
-            ],
-            [
-              -122.48043537139893,
-              37.82564992009924
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
 }
