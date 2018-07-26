@@ -1,36 +1,62 @@
 import React, { Component } from 'react'
 import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet'
-import geojson from 'json-loader!./test.geojson';
+import geojson from 'json-loader!./lanus.geojson';
+import axios from 'axios';
 
 export default class SimpleExample extends Component {
 
   constructor(props){
     super(props);
     this.state = {
-      lat: -58.41333710804967,
-      lng: -34.66598164912617,
+      lat: -34.62940399,
+      lng: -60.47531384,
       zoom: 13,
-      open: false
+      open: false,
+      geojson:null
     }
   }
 
   getStyle(feature, layer) {
     return {
       color: '#006400',
-      weight: 5,
+      weight: 2,
       opacity: 0.65
     }
   }
 
+  onEachFeature(feature, layer) {
+      console.log('feature')
+      if (feature.properties && feature.properties.name) {
+          layer.bindPopup(feature.properties.name);
+      }
+  }
+
+  componentWillMount(){
+    //var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&maxFeatures=2&outputFormat=application%2Fjson';
+    var service_url = 'http://192.168.150.142:8080/geoserver/catastro/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=catastro:parcela_registro_grafico_provincial&outputFormat=application%2Fjson';
+    axios.get(service_url)
+    .then(data=>{
+      console.log('test',data.request.response)
+      this.setState({geojson:JSON.parse(data.request.response)})
+    }).catch(error=>{
+      console.log(error.stack)
+    })
+  }
+
   render() {
     const position = [this.state.lat, this.state.lng]
+
+    if(!this.state.geojson){
+      return(<div>Loading map...</div>)
+    }
+
+    //return(<div>{this.state.geojson}</div>)
     return (
       <Map center={position} zoom={this.state.zoom}>
         <TileLayer
-          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url='http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
         />
-        <GeoJSON data={geojson} style={this.getStyle} />
+        <GeoJSON data={this.state.geojson} style={this.getStyle} onEachFeature={this.onEachFeature} />
       </Map>
     )
   }
