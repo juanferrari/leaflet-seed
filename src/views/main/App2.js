@@ -3,6 +3,8 @@ import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet'
 import geojson from 'json-loader!./lanus.geojson';
 import axios from 'axios';
 
+import img from '!!file-loader!../../assets/logo_like.png';
+
 export default class SimpleExample extends Component {
 
   constructor(props){
@@ -81,6 +83,9 @@ export default class SimpleExample extends Component {
           <label>Nomenclatura: </label>
           {(this.state.parcela)?(this.state.parcela.properties.nomencla) : (null)}
           <br/>
+        </div>
+        <div>
+          <img src={img} />
         </div>
       </div>
     )

@@ -29,6 +29,10 @@ module.exports = {
 		        	loader: 'json-loader'
 		        }
 	      	},
+	      	{
+			    test: /\.(jpe?g|png|gif|svg)$/i, 
+			    loader: "file-loader?name=/src/assets/[name].[ext]"
+			}
 		]
 	},	
 	resolve: {
@@ -36,7 +40,8 @@ module.exports = {
           actions: path.resolve('src/actions'),
           reducers: path.resolve('src/reducers'),
           views: path.resolve('src/views'),
-          node_modules: path.resolve('node_modules')
+          node_modules: path.resolve('node_modules'),
+          assets: path.resolve('assets')
         }
     },
 	plugins: [
