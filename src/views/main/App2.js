@@ -63,7 +63,7 @@ export default class SimpleExample extends Component {
         <div>
           <Map center={position} zoom={this.state.zoom}>
             <TileLayer
-              url='http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
             <GeoJSON data={this.state.geojson} style={this.getStyle} onEachFeature={this.onEachFeature} />
           </Map>
@@ -83,9 +83,6 @@ export default class SimpleExample extends Component {
           <label>Nomenclatura: </label>
           {(this.state.parcela)?(this.state.parcela.properties.nomencla) : (null)}
           <br/>
-        </div>
-        <div>
-          <img src={img} />
         </div>
       </div>
     )
